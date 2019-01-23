@@ -36,7 +36,7 @@ function DomExecute(){
       jQuery('span.product-image-container').each(function(){   
         var secImage = jQuery(this).closest('a.product').attr('data-alt-image');
         jQuery(this).append('<span class="custom-slider-image product-image-wrapper"> <img  src="'+secImage+'"> </span>');
-        jQuery(this).closest('a.product').removeAttr('data-alt-image');
+      //  jQuery(this).closest('a.product').removeAttr('data-alt-image');
         console.log(secImage);
     });
     //jQuery('span.product-image-container.owl-theme.owl-carousel.owl-demo').hide();
