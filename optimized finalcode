@@ -1,0 +1,170 @@
+console.log('updated..');
+
+(function(win) {
+      'use strict';
+      
+      var listeners = [], 
+      doc = win.document, 
+      MutationObserver = win.MutationObserver || win.WebKitMutationObserver,
+      observer;
+      
+      function ready(selector, fn) {
+          // Store the selector and callback to be monitored
+          listeners.push({
+              selector: selector,
+              fn: fn
+          });
+          if (!observer) {
+              // Watch for changes in the document
+              observer = new MutationObserver(check);
+              observer.observe(doc.documentElement, {
+                  childList: true,
+                  subtree: true
+              });
+          }
+          // Check if the element is currently in the DOM
+          check();
+      }
+          
+      function check() {
+          // Check the DOM for elements matching a stored selector
+          for (var i = 0, len = listeners.length, listener, elements; i < len; i++) {
+              listener = listeners[i];
+              // Query for elements matching the specified selector
+              elements = doc.querySelectorAll(listener.selector);
+              for (var j = 0, jLen = elements.length, element; j < jLen; j++) {
+                  element = elements[j];
+                  // Make sure the callback isn't invoked with the
+                  // same element more than once
+                  if (!element.ready) {
+                      element.ready = true;
+                      // Invoke the callback with the element
+                      listener.fn.call(element, element);
+                  }
+              }
+          }
+      }
+      // Expose 'ready'
+      win.optiReady = ready;
+              
+  })(this);
+function waitForElement(selector, callback, _timeout){
+    var _time = Date.now();
+    if(_timeout == undefined){
+        _timeout = 10000;
+    }
+    var poops = setInterval(function(){
+        if(document.querySelector(selector)){
+            clearInterval(poops);
+            callback();
+        }
+        if (Date.now() - _time > _timeout) {
+            clearInterval(poops);
+            console.log('clear');
+        }
+    }, 100);
+} 
+function CustomOwlSlider(ele){
+  console.log("Script loaded and executed.");
+  var owl = jQuery(ele).find(".owl-demo");
+  owl.owlCarousel({
+      items:1, 
+      itemsTablet:[992,1],
+      itemsTablet:[786,1],
+      itemsMobile:[479,1],
+      navigation : true,
+      dots: true
+  });
+}
+function DomExecute(){
+    optiReady('ol.products li.product', function (ele) {
+       console.log('entered');
+      //  var eleWait = jQuery(ele).find('span.product-image-container');
+     // waitForElement(eleWait, function () {  
+        var secImage = jQuery(ele).find('a.product').attr('data-alt-image');
+        jQuery(ele).find('span.product-image-container').append('<span class="custom-slider-image product-image-wrapper"> <img  src="'+secImage+'"> </span>');
+        jQuery(ele).find('a.product').removeAttr('data-alt-image');
+         
+    //jQuery('span.product-image-container.owl-theme.owl-carousel.owl-demo').hide();
+    jQuery(ele).find('span.product-image-wrapper').addClass('item');
+    jQuery(ele).find('span.product-image-container').addClass('owl-theme');
+    jQuery(ele).find('span.product-image-container.owl-theme').addClass('owl-carousel');
+   jQuery(ele).find('span.product-image-container.owl-theme').addClass('owl-demo');
+    //  jQuery('.owl-carousel .owl-item').get(0).onload = function() {
+      if(typeof jQuery.fn.owlCarousel == "function"){
+        CustomOwlSlider(ele);
+      }
+      else{
+        jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/owl-carousel/1.3.3/owl.carousel.min.js").done(function (script, textStatus) {
+          CustomOwlSlider(ele);
+        });
+      }
+           
+       //   jQuery('li.item.product.product-item').show();
+      // };
+     //  });
+      });
+    }
+vwo_$(document).ready(function(){      
+      DomExecute(); 
+ });
+ 
+ ////css
+ 
+ .product-items li.product-item .product-image-container {
+  overflow:hidden;
+}
+.owl-pagination {
+    z-index: 999999;
+    color: black;
+    font-size: 19px;
+    height: 28px;
+}
+.owl-page {
+    height: 9px;
+    width: 9px;
+    background: #fff;
+    border-radius: 100%;
+    display: inline-block;
+    margin-left: 7px;
+    border: 1px solid gainsboro;
+}
+.owl-dots .owl-dot.active span {
+    opacity: 1;
+    background: #000;
+    height: 6px;
+    width: 6px;
+}
+.owl-dots .owl-dot span {
+    background: #d8d8d8;
+    opacity: 1;
+    float: left;
+    width: 5px;
+    height: 5px;
+    border-radius: 7px;
+}
+.owl-controls {
+    float: left;
+}
+
+.owl-buttons {
+    display: none;
+}
+.owl-theme .owl-dots {
+    position:initial;
+    width: 100%;
+    bottom: 20px;
+    background: #f5f5f5;
+}
+.owl-controls {
+    width: 100%;
+    z-index: 999;
+    bottom: -5px;
+    background: #f5f5f5;
+}
+.owl-page.active {
+    background: #2a2a2a;
+}  
+body{
+    overflow-x:hidden;
+}   
